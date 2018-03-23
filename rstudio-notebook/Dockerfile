@@ -1,41 +1,73 @@
-FROM jupyter/r-notebook
+FROM calpolydatascience/rstudio:0.2
+
+LABEL maintainer="CSM Computing Support <csm-servicedesk@calpoly.edu>"
 
 USER root
 
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends \
-		libapparmor1 \
-		libedit2 \
-		lsb-release \
-		;
+# Install all OS dependencies for notebook server that starts but lacks all
+# features (e.g., download as all possible file formats)
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update && apt-get -yq dist-upgrade \
+ && apt-get install -yq --no-install-recommends \
+    wget \
+    bzip2 \
+    ca-certificates \
+    sudo \
+    locales \
+    fonts-liberation \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/*
 
-# You can use rsession from rstudio's desktop package as well.
-ENV RSTUDIO_PKG=rstudio-server-1.0.136-amd64.deb
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen
 
-RUN wget -q http://download2.rstudio.org/${RSTUDIO_PKG}
-RUN dpkg -i ${RSTUDIO_PKG}
-RUN rm ${RSTUDIO_PKG}
+# Install Tini
+RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini && \
+    echo "1361527f39190a7338a0b434bd8c88ff7233ce7b9a4876f3315c22fce7eca1b0 *tini" | sha256sum -c - && \
+    mv tini /usr/local/bin/tini && \
+    chmod +x /usr/local/bin/tini
 
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Configure environment
+ENV CONDA_DIR=/opt/conda \
+    SHELL=/bin/bash \
+    NB_USER=jovyan \
+    NB_UID=1000 \
+    NB_GID=100 \
+    LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8
+ENV PATH=$CONDA_DIR/bin:$PATH \
+    HOME=/home/$NB_USER
 
-RUN git clone https://github.com/jupyterhub/nbserverproxy /opt/nbserverproxy
-RUN pip install -e /opt/nbserverproxy
+ADD fix-permissions /usr/local/bin/fix-permissions
+# Create jovyan user with UID=1000 and in the 'users' group
+# and make sure these dirs are writable by the `users` group.
+RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+    mkdir -p $CONDA_DIR && \
+    chown $NB_USER:$NB_GID $CONDA_DIR && \
+    chmod g+w /etc/passwd /etc/group && \
+    fix-permissions $HOME && \
+    fix-permissions $CONDA_DIR
 
+USER $NB_UID
 
-USER $NB_USER
+# Setup work directory for backward-compatibility
+RUN mkdir /home/$NB_USER/work && \
+    fix-permissions /home/$NB_USER
 
-# RUN pip install git+https://github.com/jupyterhub/nbserverproxy.git
-RUN jupyter serverextension enable --sys-prefix --py nbserverproxy
+EXPOSE 8888
+WORKDIR $HOME
 
-RUN pip install git+https://github.com/jupyterhub/nbrsessionproxy.git
-RUN jupyter serverextension enable --sys-prefix --py nbrsessionproxy
-RUN jupyter nbextension install    --sys-prefix --py nbrsessionproxy
-RUN jupyter nbextension enable     --sys-prefix --py nbrsessionproxy
-RUN jupyter serverextension enable --py nbrsessionproxy
-# RUN jupyter labextension link /opt/nbrsessionproxy/jupyterlab-rsessionproxy
+# Configure container startup
+ENTRYPOINT ["tini", "--"]
+CMD ["start-notebook.sh"]
 
-# The desktop package uses /usr/lib/rstudio/bin
-ENV PATH="${PATH}:/usr/lib/rstudio-server/bin"
-ENV LD_LIBRARY_PATH="/usr/lib/R/lib:/lib:/usr/lib/x86_64-linux-gnu:/usr/lib/jvm/java-7-openjdk-amd64/jre/lib/amd64/server:/opt/conda/lib/R/lib"
+# Add local files as late as possible to avoid cache busting
+COPY start.sh /usr/local/bin/
+COPY start-notebook.sh /usr/local/bin/
+COPY start-singleuser.sh /usr/local/bin/
+COPY jupyter_notebook_config.py /etc/jupyter/
+RUN fix-permissions /etc/jupyter/
 
+# Switch back to jovyan to avoid accidental container runs as root
+USER $NB_UID
