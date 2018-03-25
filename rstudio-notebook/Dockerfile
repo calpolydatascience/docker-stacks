@@ -49,13 +49,14 @@ ADD fix-permissions /usr/local/bin/fix-permissions
 #     chown $NB_USER:$NB_GID $CONDA_DIR && \
 
 RUN chmod g+w /etc/passwd /etc/group && \
-    chmod +x /usr/local/bin/fix-permissions && \
-    fix-permissions $HOME 
+    chmod +x /usr/local/bin/fix-permissions
+     
     # && \
     # fix-permissions $CONDA_DIR
 
 # Setup work directory for backward-compatibility
 RUN mkdir /home/$NB_USER/work && \
+    fix-permissions $HOME && \
     fix-permissions /home/$NB_USER
 
 EXPOSE 8888
