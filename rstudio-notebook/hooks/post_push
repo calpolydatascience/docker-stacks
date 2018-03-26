@@ -2,11 +2,6 @@
 
 # Tag the latest build with the short git sha. Push the tag in addition
 # to the "latest" tag already pushed.
-GIT_SHA_TAG=${SOURCE_COMMIT:0:12}
-echo $IMAGE_NAME
-echo $SOURCE_COMMIT
-echo $GIT_SHA_TAG
-echo $DOCKER_REPO
 
-docker tag $IMAGE_NAME $DOCKER_REPO:$GIT_SHA_TAG
-docker push $DOCKER_REPO:$GIT_SHA_TAG
+docker tag $IMAGE_NAME $DOCKER_REPO:$SOURCE_COMMIT
+docker push $DOCKER_REPO:$SOURCE_COMMIT
