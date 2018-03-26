@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# Tag the latest build with the short git sha. Push the tag in addition
-# to the "latest" tag already pushed.
-
-docker tag $IMAGE_NAME $DOCKER_REPO:$SOURCE_COMMIT
-docker push $DOCKER_REPO:$SOURCE_COMMIT
