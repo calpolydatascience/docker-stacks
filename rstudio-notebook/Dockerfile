@@ -28,7 +28,7 @@ RUN wget --quiet https://github.com/krallin/tini/releases/download/v0.10.0/tini 
     chmod +x /usr/local/bin/tini
 
 # Configure environment
-ENV CONDA_DIR=/srv/venv/bin \
+ENV CONDA_DIR=/srv/venv \
     SHELL=/bin/bash \
     NB_USER=jovyan \
     NB_UID=1000 \
