@@ -1,4 +1,4 @@
-FROM calpolydatascience/rstudio:0.2
+FROM calpolydatascience/rstudio:0.3
 
 LABEL maintainer="CSM Computing Support <csm-servicedesk@calpoly.edu>"
 
@@ -35,7 +35,9 @@ ENV CONDA_DIR=/srv/venv \
     NB_GID=100 \
     LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
-    LANGUAGE=en_US.UTF-8
+    LANGUAGE=en_US.UTF-8 \
+    R_LIBS_USER=~/R/packages \
+    R_LIBS_SITE=/srv/rlibs
 ENV PATH=$CONDA_DIR/bin:$PATH \
     PATH=$PATH:/srv/venv/bin/ \
     HOME=/home/$NB_USER
@@ -71,6 +73,7 @@ COPY start.sh /usr/local/bin/
 COPY start-notebook.sh /usr/local/bin/
 COPY start-singleuser.sh /usr/local/bin/
 COPY jupyter_notebook_config.py /etc/jupyter/
+COPY rsession.conf /etc/rstudio/rsession.conf
 RUN fix-permissions /etc/jupyter/
 
 # Switch back to jovyan to avoid accidental container runs as root
