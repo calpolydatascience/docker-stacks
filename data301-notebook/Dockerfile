@@ -5,10 +5,10 @@ RUN conda install --quiet --yes \
     'blaze=0.11*' \
     'odo=0.5*' \
     'altair=1.2*'\
-    'mkl-service=1.1*' \
+    #'mkl-service=1.1*' \
     'pymc3=3.3*' \
-    'pytorch=0.3*' \
-    'torchvision=0.2*' \
+    #'pytorch=0.3*' \
+    #'torchvision=0.2*' \
     'brewer2mpl=1.4*' \
     'plotly=2.5*' && \
     conda clean -tipsy && \
