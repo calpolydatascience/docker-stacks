@@ -1,4 +1,4 @@
-FROM jupyter/tensorflow-notebook
+FROM jupyter/tensorflow-notebook:52d1fbcb415e
 
 # Install Tensorflow
 RUN conda install --quiet --yes \
