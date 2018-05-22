@@ -10,6 +10,7 @@ RUN conda install --quiet --yes \
     #'pytorch=0.3*' \
     #'torchvision=0.2*' \
     'brewer2mpl=1.4*' \
+    'lxml=4.2*' \
     'plotly=2.5*' && \
     conda clean -tipsy && \
     pip install ipythonblocks vdom && \
