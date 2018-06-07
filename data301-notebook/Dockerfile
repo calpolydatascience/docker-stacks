@@ -23,6 +23,7 @@ RUN conda install --quiet --yes \
     'brewer2mpl=1.4*' \
     'lxml=4.2*' \
     'plotly=2.5*' \
+    'scikit-image=0.14*' \
  && conda clean -tipsy \
  && pip install ipythonblocks vdom \
  && jupyter labextension install "@jupyterlab/geojson-extension" \
