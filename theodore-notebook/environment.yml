@@ -9,5 +9,6 @@ dependencies:
   - scipy
   - matplotlib
   - openbabel
+  - h5py
   # - pip:
   #   - "--editable=git+https://github.com/orbkit/orbkit.git"
