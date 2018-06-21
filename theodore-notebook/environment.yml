@@ -1,0 +1,13 @@
+name: theodore
+channels: 
+  - openbabel
+dependencies:
+  - python=2.7
+  - ipykernel
+  - cython
+  - numpy
+  - scipy
+  - matplotlib
+  - openbabel
+  # - pip:
+  #   - "--editable=git+https://github.com/orbkit/orbkit.git"
