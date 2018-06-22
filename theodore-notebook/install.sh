@@ -2,6 +2,7 @@
 
 # Bootstrap script to install ORBKIT and TheoDORE
 
+## Conda Dependencies
 # Use conda to install into base environment
 conda env update -n=base -f environment.yml
 # If installing into a new conda env
