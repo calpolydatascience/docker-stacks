@@ -13,19 +13,7 @@ RUN  conda env update -n=base -f /tmp/environment.yml \
  && fix-permissions $CONDA_DIR \
  && fix-permissions /home/$NB_USER
 
-USER $NB_USER
-ENV ORBKITPATH /opt/conda/lib/python2.7/site-packages
-RUN wget https://sourceforge.net/projects/theodore-qc/files/TheoDORE_1.7.2.tgz/download \
- && tar -xf download \
- && chown 1000:100 TheoDORE_1.7.2 \
- && rm -rf download work \
- && git clone https://github.com/orbkit/orbkit.git \
- && mv orbkit $ORBKITPATH/orbkit \
- && cd $ORBKITPATH/orbkit \
- && python setup.py build_ext --inplace clean \
- && echo './orbkit' > ../orbkit.pth \
- && echo '~/TheoDORE_1.7.2/bin' > ../theodore.pth \
- && echo '~/TheoDORE_1.7.2/lib' >> ../theodore.pth \ 
- && echo 'source TheoDORE_1.7.2/setpaths.bash' >> ~/.rcbash
+COPY install.sh $HOME/install.sh
+RUN $HOME/install.sh
 
 USER $NB_USER
