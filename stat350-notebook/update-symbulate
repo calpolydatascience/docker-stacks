@@ -1,0 +1,6 @@
+#!/bin/bash
+
+git clone https://github.com/dlsun/symbulate /tmp/symbulate
+cd /tmp/symbulate
+python setup.py install
+rm -rf /tmp/symbulate
