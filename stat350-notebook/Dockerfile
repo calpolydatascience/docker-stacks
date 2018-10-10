@@ -9,3 +9,8 @@ RUN cd /tmp && \
     rm -rf /tmp/symbulate && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
+
+# Install nbgitpuller: https://github.com/jupyterhub/nbgitpuller
+RUN pip install --quiet --no-cache-dir \
+    'nbgitpuller' && \
+    jupyter serverextension enable --py nbgitpuller --sys-prefix
