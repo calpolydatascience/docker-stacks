@@ -5,6 +5,7 @@ RUN pip install --quiet --no-cache-dir \
     'nbgitpuller' && \
     jupyter serverextension enable --py nbgitpuller --sys-prefix
 
+# Install symbulate prerequisites
 RUN conda install --quiet --yes \
     'qt' \
     'pyqt' && \
