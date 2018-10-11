@@ -4,3 +4,5 @@ git clone https://github.com/dlsun/symbulate /tmp/symbulate
 cd /tmp/symbulate
 python setup.py install
 rm -rf /tmp/symbulate
+chown 1000 /opt/conda/lib/python3.6/site-packages/symbulate*
+chown 1000 /opt/conda/lib/python3.6/site-packages/easy-install.pth
